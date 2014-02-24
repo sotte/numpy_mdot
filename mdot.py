@@ -5,7 +5,7 @@ import mytimer
 
 
 #@mytimer.timeit
-def chain_order_rec(args):
+def _det_chain_order_rec(args):
     """
     cost[i, k ] = min([cost[prefix] + cost[suffix] + cost_mult(prefix, suffix)
                        for k in range(i, j)])
@@ -37,7 +37,7 @@ def chain_order_rec(args):
     return m, s
 
 
-def chain_order_for_three(A, B, C, evaluate=True):
+def _det_chain_order_for_three(A, B, C, evaluate=True):
     """Determine the optimal parenthesizations for three arrays.
 
     Doing in manually instead is approximately 15 times faster.
@@ -58,12 +58,12 @@ def chain_order_for_three(A, B, C, evaluate=True):
 
 
 #@mytimer.timeit
-def multiply_r(args, s, i, j):
+def _multiply_r(args, s, i, j):
     if i == j:
         return args[i]
     else:
-        return np.dot(multiply_r(args, s, i, s[i, j]),
-                      multiply_r(args, s, s[i, j] + 1, j))
+        return np.dot(_multiply_r(args, s, i, s[i, j]),
+                      _multiply_r(args, s, s[i, j] + 1, j))
 
 
 def _print_parens(args, s, i, j, names=None):
@@ -81,13 +81,13 @@ def _print_parens(args, s, i, j, names=None):
         print(")", end="")
 
 
-def print_optimal(*args, **kwargs):
+def print_optimal_chain_order(*args, **kwargs):
     """Print the optimal chain of multiplications that minimizes the total
     number of multiplications.
 
     """
     names = kwargs.get("names", None)
-    m, s = chain_order_rec(args)
+    m, s = _det_chain_order_rec(args)
     _print_parens(args, s, 0, len(args) - 1, names=names)
 
 
@@ -165,12 +165,12 @@ def mdot(*args, **kwargs):
 
     optimize = kwargs.get("optimize", True)
     if optimize:
-        # chain_order_for_three is much faster than chain_order_rec
+        # _det_chain_order_for_three is much faster than _det_chain_order_rec
         if n == 3:
-            return chain_order_for_three(args[0], args[1], args[2],
-                                         evaluate=True)
+            return _det_chain_order_for_three(args[0], args[1], args[2],
+                                              evaluate=True)
         else:
-            m, s = chain_order_rec(args)
-            return multiply_r(args, s, 0, n - 1)
+            m, s = _det_chain_order_rec(args)
+            return _multiply_r(args, s, 0, n - 1)
     else:
         return reduce(np.dot, args)
