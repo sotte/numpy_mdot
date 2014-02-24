@@ -22,11 +22,11 @@ def chain_order_rec(args):
     p.append(args[-1].shape[1])
 
     # determine the order of the multiplication using DP
-    n = len(p) - 1
+    n = len(args)
     # costs for subproblems
-    m = np.zeros((n, n))
+    m = np.zeros((n, n), dtype=np.int)
     # helper to actually multiply optimal solution
-    s = np.zeros((n, n))
+    s = np.zeros((n, n), dtype=np.int)
     for i in range(n):
         for j in range(i+1, n):
             cost, k = min((m[i, k] + m[k+1, j] + p[i] * p[k+1] * p[j+1], k)
@@ -40,7 +40,7 @@ def chain_order_rec(args):
 #@mytimer.timeit
 def multiply_r(args, s, i, j):
     if i == j:
-        return args[int(i)]
+        return args[i]
     else:
         return np.dot(multiply_r(args, s, i, s[i, j]),
                       multiply_r(args, s, s[i, j] + 1, j))
