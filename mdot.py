@@ -72,20 +72,68 @@ def print_optimal(*args, **kwargs):
 
 
 def mdot(*args, **kwargs):
-    """Multiply the given arrays.
+    """Dot product of multiple arrays.
 
-    `optimize` = True
+    `mdot` chains `numpy.dot` and uses an optimal parenthesizations of
+    the matrices [1]_ [2]_. Depending on the shape of the matrices this can
+    speed up the multiplication a lot.
 
-    TODO extend and document.
+    Think of `mdot` as::
 
-    Minimize the number of required scalar multiplications for the given
-    matrices.
+        def mdot(*args): return reduce(numpy.dot, args)
 
-    Example for the costs:
-    A_{10x100}, B_{100x5}, C_{5x50}
 
-    cost((AB)C) = 5000 + 2500 = 7500
-    cost(A(BC)) = 50000 + 25000 = 75000
+    Parameters
+    __________
+    *args : multiple arrays
+
+    Returns
+    -------
+    output : ndarray
+        Returns the dot product of the supplied arrays
+
+    See Also
+    --------
+    dot : dot multiplication with two arguments.
+
+    References
+    ----------
+    TODO extend and format
+
+    .. [1] Cormen, "Introduction to Algorithms", Chapter 15.2, p. 370-378
+    .. [2] http://en.wikipedia.org/wiki/Matrix_chain_multiplication
+
+    Examples
+    --------
+    `mdot` allows you to write
+    >>> import numpy as np
+    >>> A = np.random.random(10000, 100)
+    >>> B = np.random.random(100, 1000)
+    >>> C = np.random.random(1000, 5)
+    >>> D = np.random.random(5, 333)
+    >>> # the actual dot multiplication
+    >>> mdot(A, B, C, D)
+
+    instead of
+    >>> np.dot(np.dot(np.dot(A, B), C), D)
+    >>> # or
+    >>> A.dot(B).dot(C).dot(D)
+
+
+    Example: cost of different parenthesizations
+    --------------------------------------------
+    The cost for a matrix multiplication can be calculated with the
+    following function::
+
+        def cost(A, B): return A.shape[0] * A.shape[1] * B.shape[1]
+
+    Let's assume we have three matrices
+    :math:`A_{10x100}, B_{100x5}, C_{5x50}$`.
+
+    The costs for the two different parenthesizations are as follows::
+
+        cost((AB)C) = 5000 + 2500 = 7500
+        cost(A(BC)) = 50000 + 25000 = 75000
 
     """
     if len(args) == 1:
