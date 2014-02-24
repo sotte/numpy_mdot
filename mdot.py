@@ -156,8 +156,12 @@ def mdot(*args, **kwargs):
         cost(A(BC)) = 50000 + 25000 = 75000
 
     """
-    if len(args) == 1:
+    n = len(args)
+    if n == 1:
         return args[0]
+    elif n == 2:
+        # optimization only makes sense for len(args) > 2
+        return np.dot(args[0], args[1])
 
     optimize = kwargs.get("optimize", True)
 
