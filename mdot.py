@@ -37,6 +37,26 @@ def chain_order_rec(args):
     return m, s
 
 
+def chain_order_for_three(A, B, C, evaluate=True):
+    """Determine the optimal parenthesizations for three arrays.
+
+    Doing in manually instead is approximately 15 times faster.
+
+    """
+    # cost1 = cost((AB)C)
+    cost1 = (A.shape[0] * A.shape[1] * B.shape[1] +  # (AB)
+             A.shape[0] * B.shape[1] * C.shape[1])   # TMP C
+    # cost2 = cost((AB)C)
+    cost2 = (B.shape[0] * B.shape[1] * C.shape[1] +  # (BC)
+             A.shape[0] * A.shape[1] * C.shape[1])   # A TMP
+
+    if evaluate is True:
+        if cost1 < cost2:
+            return np.dot(np.dot(A, B), C)
+        else:
+            return np.dot(A, np.dot(B, C))
+
+
 #@mytimer.timeit
 def multiply_r(args, s, i, j):
     if i == j:
