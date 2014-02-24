@@ -164,9 +164,13 @@ def mdot(*args, **kwargs):
         return np.dot(args[0], args[1])
 
     optimize = kwargs.get("optimize", True)
-
     if optimize:
-        m, s = chain_order_rec(args)
-        return multiply_r(args, s, 0, len(args) - 1)
+        # chain_order_for_three is much faster than chain_order_rec
+        if n == 3:
+            return chain_order_for_three(args[0], args[1], args[2],
+                                         evaluate=True)
+        else:
+            m, s = chain_order_rec(args)
+            return multiply_r(args, s, 0, n - 1)
     else:
         return reduce(np.dot, args)
