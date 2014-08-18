@@ -53,3 +53,5 @@ docs/_build/
 
 # ipython notebook
 .ipynb_checkpoints
+
+core
