@@ -78,8 +78,8 @@ def mdot(*args, **kwargs):
 
     """
     for array in args:
-        if array.ndim < 2:
-            raise ValueError("ndim for each argument must be >=2.")
+        if array.ndim != 2:
+            raise ValueError("ndim for each argument must be 2.")
 
     optimize = kwargs.get("optimize", True)
 
